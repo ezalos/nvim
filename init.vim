@@ -5,20 +5,60 @@ set shiftwidth=4
 set colorcolumn=81
 set autoindent
 set smartindent
+set relativenumber
+set mouse=a
+
+"Tabulations specialised for file type
+au BufNewFile, BufRead *.py
+    \ set tabstop=4
+    \ softtabstop=4
+    \ shiftwidth=4
+    \ textwidth=79
+    \ expandtab
+    \ autoindent
+    \ fileformat=unix
+
+au BufNewFile, BufRead *.js, *.html, *.css
+    \ set tabstop=2
+    \ softtabstop=2
+    \ shiftwidth=2
+
+"Flag unnecessery whitespaces
+au BufRead, BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
 
 
-
+set encoding=utf-8
 
 "You'll need to install plug vim first
 "curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
 "    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+"Auto install vim-plug
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 call plug#begin()
+
+"Live compilations errors for c and other languages
+Plug 'vim-syntastic/syntastic'
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_c_include_dirs = [ '../includes', 'includes', 'libft/includes' ]
 
 "a universal set of defaults that everyone can agree on.
 Plug 'tpope/vim-sensible'
 
 "File management
 Plug 'scrooloose/nerdtree'
+Plug 'jistr/vim-nerdtree-tabs'
 Plug 'ctrlpvim/ctrlp.vim'
 
 "Improved C syntax color
@@ -27,11 +67,19 @@ Plug 'justinmk/vim-syntax-extra'
 Plug 'pbondoer/vim-42header'
 
 "Python intellisense engine autocompletion
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 "VIM neo-completion and remap of navigation
-Plug 'deoplete-plugins/deoplete-jedi'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"Plug 'deoplete-plugins/deoplete-jedi'
+
+if has('nvim')
+"  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+"  Plug 'Shougo/deoplete.nvim'
+"  Plug 'roxma/nvim-yarp'
+"  Plug 'roxma/vim-hug-neovim-rpc'
+endif
+
 let g:deoplete#enable_at_startup = 1
 inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
 inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
@@ -74,9 +122,46 @@ Plug 'airblade/vim-gitgutter'
 "Can use :Git commands in vim
 Plug 'tpope/vim-fugitive'
 
+"Enable folding
+set foldmethod=indent
+set foldlevel=99
+"Enable folding with the spacebar
+nnoremap <space> za
+
+"Python folding donne right
+Plug 'tmhedberg/SimpylFold'
+
+"Python auto-indent
+Plug 'vim-scripts/indentpython.vim'
+
+"Python good autocomplete
+"Plug 'Valloric/YouCompleteMe'
+"Auto-complete window go away
+"let g:ycm_autoclose_preview_window_after_completion=1
+"Space - g will go to definition
+"map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+
+"check your syntax on each save 
+Plug 'vim-syntastic/syntastic'
+
+"PEP 8 checking 
+Plug 'nvie/vim-flake8'
+
+let python_highlight_all=1
+
 "Seems cool, need to better understand
 "Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 "Plug 'junegunn/fzf.vim'
+
+"python with virtualenv support
+"py << EOF
+"import os
+"import sys
+"if 'VIRTUAL_ENV' in os.environ:
+"  project_base_dir = os.environ['VIRTUAL_ENV']
+"  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+"  execfile(activate_this, dict(__file__=activate_this))
+"EOF
 
 call plug#end()
 
