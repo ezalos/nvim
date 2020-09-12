@@ -49,9 +49,20 @@ set statusline+=%*
 
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
 let g:syntastic_c_include_dirs = [ '../includes', 'includes', 'libft/includes' ]
+"Remove Pylint checker
+let g:syntastic_python_checkers = ['python']
+"let g:syntastic_loc_list_height = 5
+
+" Syntastic responsive size
+" see :h syntastic-loclist-callback
+function! SyntasticCheckHook(errors)
+	if !empty(a:errors)
+		let g:syntastic_loc_list_height = min([len(a:errors), 10])
+	endif
+endfunction
 
 "a universal set of defaults that everyone can agree on.
 Plug 'tpope/vim-sensible'
@@ -60,6 +71,11 @@ Plug 'tpope/vim-sensible'
 Plug 'scrooloose/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
 Plug 'ctrlpvim/ctrlp.vim'
+
+"Virtual env compability with syntastic
+Plug 'jmcantrell/vim-virtualenv'
+
+
 
 "Improved C syntax color
 Plug 'justinmk/vim-syntax-extra'
