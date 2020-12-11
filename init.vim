@@ -7,6 +7,10 @@ set autoindent
 set smartindent
 set relativenumber
 set mouse=a
+set noexpandtab
+
+"Remap for copy to real clipboard
+vnoremap <C-c> "+y
 
 "Tabulations specialised for file type
 au BufNewFile, BufRead *.py
